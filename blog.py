@@ -220,7 +220,7 @@ class BlogFrontHandler(BlogHandler):
 
     def get(self):
         posts = db.GqlQuery(
-            "select * from Post order by created desc limit 10")
+            "select * from Post order by created desc")
 
         self.render('main-page.html', posts=posts)
 
@@ -235,7 +235,7 @@ class PostHandler(BlogHandler):
 
         comments = db.GqlQuery(
             '''select * from Comment where ancestor is :1
-            order by created desc limit 10''', key)
+            order by created asc''', key)
 
         if not post:
             self.error(404)

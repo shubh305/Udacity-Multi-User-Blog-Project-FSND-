@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+
+{% block content %}
+     <div class="container">
+         <div class="post-wrapper-block">
+             <div class="like-error">{{access_error}}</div>
+             {% for p in posts %}
+                 {% if user %}
+                {{ p.render(user.key().id()) | safe }}
+                 {% else %}
+                     {{ p.render(None) | safe }}
+                 {% endif %}
+             {% endfor %}
+         </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="content">
+          <div class="new-post post-wrapper animated fadeIn">
+              <form method="post" autocomplete="off">
+                  <textarea autofocus class="post-content" placeholder="Write a comment..." type="text" name="content">{{content}}</textarea>
+                  <input class="submit" type="submit" value="Comment">
+                  <span class="post-error">{{error}}</span>
+              </form>
+          </div>
+      </div>
+  </div>
+  
+{% endblock %}

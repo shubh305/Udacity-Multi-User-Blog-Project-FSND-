@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Multi User Blog</title>
+     <link type="text/css" rel="stylesheet" href="/static/login.css" />
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link href="https://fonts.googleapis.com/css?family=Oxygen|Rambla|Ropa+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+		<nav class="nav">
+            <ul>
+                {% if user %}
+                    <li class="welcome">
+                        <a href="/">Welcome, {{user.name}}!</a>
+                    </li>
+                    <li class="float-right">
+                        <a href="/newpost">Create a Post</a>
+                    </li>
+                    <li class="float-extreme-right">
+                        <a href="/logout">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="welcome">
+                        <a href="">Multi User Blog</a>
+                    </li>
+                    <li class="float-right">
+                        <a href="/signup" class="">Signup</a>
+                    </li>
+                    <li class="float-extreme-right">
+                        <a href="/login" class="">Login</a>
+                    </li>
+					{% endif %}
+            </ul>
+		</nav>
+
+				{% block content %}
+				{% endblock %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.js"></script>
+        <script>
+    new WOW().init();
+        </script>
+</body>
+</html>

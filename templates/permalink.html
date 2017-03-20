@@ -1,0 +1,73 @@
+{% extends "index.html" %}
+
+{% block content %}
+     <div class="container">
+         <div class="post-wrapper-block">
+
+        {% if user %}
+            {{post.render(user.key().id()) | safe}}
+        {% else %}
+            {{ post.render(None) | safe }}
+        {% endif %}
+
+        {% if user and user.key().id() == post.user_id %}
+            <a href="/{{post.key().id()}}/delete/{{post.user_id}}">
+                <div class="button-wrapper">
+                    <button class="post-button delete-button"><span>Delete </span></button>
+                </div>
+            </a>
+            <a href="/{{post.key().id()}}/edit">
+               <div class="button-wrapper">
+                    <button class="post-button edit-button"><span>Edit </span></button>
+               </div>
+            </a>
+        {% elif user %}
+		<a href="/{{post.key().id()}}/unlike">
+			<div class="button-wrapper">
+                    <button class="post-button unlike-button"><span>Unlike </span></button>
+			</div>
+		</a>
+
+	{% endif %}
+
+	{% if user %}
+		<a href="/{{post.key().id()}}/addcomment/{{user.key().id()}}">
+			<div class="button-wrapper">
+                    <button class="post-button comment-button"><span>Comment </span></button>
+			</div>
+		</a>
+	{% endif %}
+
+	<div class="comments">
+		{% for c in comments %}
+			<div class="comment">
+			        <div class="comment-block">
+			            <div class="comment-logo">{{c.user_name}}</div>
+			            <div class="comment-date">{{c.created.strftime("%b %d, %Y")}}</div>
+			        </div>
+
+			    <p class="comment-content">
+			        {{ c.content }}
+			    </p>
+				    {% if user and user.key().id() == c.user_id %}
+                        <a href="/{{post.key().id()}}/{{c.user_id}}/editcomment/{{ c.key().id() }}">
+				    		<span class="edit-comment">
+                              <button class="comment-buttons edit-comment-button"><span>Edit</span></button>
+                            </span>
+				    	</a>
+				    	<a href="/{{post.key().id()}}/{{c.user_id}}/deletecomment/{{ c.key().id() }}">
+				    		<div class="delete-comment">
+                                  <button class="comment-buttons delete-comment-button"><span>Delete</span></button>
+				    		</div>
+				    	</a>
+
+				    {% endif %}
+			    </div>
+
+		{% endfor %}
+	</div>
+
+	<i>{{error}}</i>
+  	</div>
+		</div>
+{% endblock %}

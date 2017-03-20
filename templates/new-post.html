@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="post-wrapper">
+            <div class="new-post">
+                <form method="post" autocomplete="off">
+                    <input autofocus class="post-title" placeholder="Subject" type="text" name="subject" value="{{subject}}">
+                    <textarea class="post-content" placeholder="What's on your mind?" type="text" name="content">{{content}}</textarea>
+                    <input class="submit" type="submit" value="Post">
+                    <span class="post-error">{{error}}</span>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

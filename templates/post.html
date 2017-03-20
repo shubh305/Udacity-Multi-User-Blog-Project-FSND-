@@ -1,0 +1,22 @@
+<div class="post">
+    <div class="post-header wow animated fadeInUp">
+        <div class="user">Posted By {{author}}</div>
+        <div class="date">{{p.created.strftime("%b %d, %Y")}}</div>
+    </div>
+    <h1 class="title">
+        <a href="/{{p.key().id()}}">{{p.subject}}</a>    
+    </h1>
+    <p class="content">
+        {{p._render_text | safe}}
+    </p>
+    <div class="like" >
+        <a href="/{{p.key().id()}}/like">
+            <img class="like-icon" src="https://image.flaticon.com/icons/svg/126/126473.svg" alt="">
+        </a>
+        <span class="like-counter">{{p.likes}}</span>
+    </div>
+</div>
+
+
+
+

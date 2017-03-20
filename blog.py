@@ -216,7 +216,7 @@ class Like(db.Model):
 # show all the posts in the front page
 
 
-class BlogFront(BlogHandler):
+class BlogFrontHandler(BlogHandler):
 
     def get(self):
         posts = db.GqlQuery(
@@ -227,7 +227,7 @@ class BlogFront(BlogHandler):
 # Posts ===============================================================
 
 
-class Post(BlogHandler):
+class PostHandler(BlogHandler):
 
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -246,7 +246,7 @@ class Post(BlogHandler):
 # Like Post ==========================================================
 
 
-class LikePost(BlogHandler):
+class LikePostHandler(BlogHandler):
 
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -282,7 +282,7 @@ class LikePost(BlogHandler):
 # Unlike Post ========================================================
 
 
-class UnlikePost(BlogHandler):
+class UnlikePostHandler(BlogHandler):
 
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -311,7 +311,7 @@ class UnlikePost(BlogHandler):
 # New Post ===========================================================
 
 
-class NewPost(BlogHandler):
+class NewPostHandler(BlogHandler):
 
     def get(self):
         if self.user:
@@ -340,7 +340,7 @@ class NewPost(BlogHandler):
 # Edit Post ===========================================================
 
 
-class EditPost(BlogHandler):
+class EditPostHandler(BlogHandler):
 
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -388,7 +388,7 @@ class EditPost(BlogHandler):
 # Delete Post =========================================================
 
 
-class DeletePost(BlogHandler):
+class DeletePostHandler(BlogHandler):
 
     def get(self, post_id, post_user_id):
         if self.user and self.user.key().id() == int(post_user_id):
@@ -416,7 +416,7 @@ class DeletePost(BlogHandler):
 # Add Comment ========================================================
 
 
-class AddComment(BlogHandler):
+class AddCommentHandler(BlogHandler):
 
     def get(self, post_id, user_id):
         if not self.user:
@@ -446,7 +446,7 @@ class AddComment(BlogHandler):
 
 # Edit Comment ========================================================
 
-class EditComment(BlogHandler):
+class EditCommentHandler(BlogHandler):
 
     def get(self, post_id, post_user_id, comment_id):
         if self.user and self.user.key().id() == int(post_user_id):
@@ -484,7 +484,7 @@ class EditComment(BlogHandler):
 # Delete Comment ======================================================
 
 
-class DeleteComment(BlogHandler):
+class DeleteCommentHandler(BlogHandler):
 
     def get(self, post_id, post_user_id, comment_id):
 
@@ -505,7 +505,7 @@ class DeleteComment(BlogHandler):
 # Login ===============================================================
 
 
-class Login(BlogHandler):
+class LoginHandler(BlogHandler):
 
     def get(self):
         self.render('login.html')
@@ -526,7 +526,7 @@ class Login(BlogHandler):
 # Logout ==============================================================
 
 
-class Logout(BlogHandler):
+class LogoutHandler(BlogHandler):
 
     def get(self):
         self.logout()
@@ -535,7 +535,7 @@ class Logout(BlogHandler):
 # Sign up =============================================================
 
 
-class Signup(BlogHandler):
+class SignupHandler(BlogHandler):
 
     def done(self):
         u = User.by_name(self.username)
@@ -587,17 +587,17 @@ class Signup(BlogHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/', BlogFront),
-    ('/signup', Signup),
-    ('/login', Login),
-    ('/logout', Logout),
-    ('/newpost', NewPost),
-    ('/([0-9]+)', Post),
-    ('/([0-9]+)/like', LikePost),
-    ('/([0-9]+)/unlike', UnlikePost),
-    ('/([0-9]+)/edit', EditPost),
-    ('/([0-9]+)/delete/([0-9]+)', DeletePost),
-    ('/([0-9]+)/addcomment/([0-9]+)', AddComment),
-    ('/([0-9]+)/([0-9]+)/editcomment/([0-9]+)', EditComment),
-    ('/([0-9]+)/([0-9]+)/deletecomment/([0-9]+)', DeleteComment)
-    ], debug=True)
+    ('/', BlogFrontHandler),
+    ('/signup', SignupHandler),
+    ('/login', LoginHandler),
+    ('/logout', LogoutHandler),
+    ('/newpost', NewPostHandler),
+    ('/([0-9]+)', PostHandler),
+    ('/([0-9]+)/like', LikePostHandler),
+    ('/([0-9]+)/unlike', UnlikePostHandler),
+    ('/([0-9]+)/edit', EditPostHandler),
+    ('/([0-9]+)/delete/([0-9]+)', DeletePostHandler),
+    ('/([0-9]+)/addcomment/([0-9]+)', AddCommentHandler),
+    ('/([0-9]+)/([0-9]+)/editcomment/([0-9]+)', EditCommentHandler),
+    ('/([0-9]+)/([0-9]+)/deletecomment/([0-9]+)', DeleteCommentHandler)
+], debug=True)

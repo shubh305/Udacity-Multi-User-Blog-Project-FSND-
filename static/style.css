@@ -355,13 +355,21 @@ nav ul li a:hover {
        min-width: 20vw;
        font-size:18px;
    }
+     .comment-content {
+        font-size: 1.8rem;
+        margin-left: 10px;
+    }
 }
 
 @media only screen and (min-width: 360px) and (max-width: 768px) {
-    .post-button{
+    .post-button {
         min-width: 25vw;
         font-size: 15px;
-   }
+    }
+    .comment-content {
+        font-size: 1.8rem;
+        margin-left: 5px;
+    }
 }
 
 .post-button{
@@ -458,10 +466,6 @@ nav ul li a:hover {
 .comment .comment-logo {
 	font-weight: 700;
 	letter-spacing: .1rem;
-}
-
-.comment-content {
-	font-size: 1.8rem;
 }
 
 .delete-comment,.edit-comment {

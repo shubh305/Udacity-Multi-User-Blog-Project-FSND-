@@ -89,7 +89,6 @@ class BlogHandler(webapp2.RequestHandler):
             'Set-Cookie',
             'user_id=; Path=/')
 
-
     def set_secure_cookie(self, name, val):
         """securely set a cookie"""
         cookie_val = make_secure_val(val)
@@ -97,13 +96,11 @@ class BlogHandler(webapp2.RequestHandler):
             'Set-Cookie',
             '%s=%s; Path=/' % (name, cookie_val))
 
-
     def initialize(self, *a, **kw):
         """get the user from secure cookie when we initializing"""
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
-
 
     def read_secure_cookie(self, name):
         """read the cookie"""

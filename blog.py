@@ -14,86 +14,60 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True)
 
-# Global Functions
+# Global Functions ========================================
 
 
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
-# get the key from user table
-
 
 def users_key(group='default'):
+    """get the key from user table"""
     return db.Key.from_path('users', group)
-
-# get the key from blog table
 
 
 def blog_key(name='default'):
+    """get the key from blog table"""
     return db.Key.from_path('blogs', name)
-
-
-# Validation for login / signup =======================================
-
-USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
-PASS_RE = re.compile(r"^.{3,20}$")
-EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
-
-
-def valid_username(username):
-    return username and USER_RE.match(username)
-
-
-def valid_password(password):
-    return password and PASS_RE.match(password)
-
-
-def valid_email(email):
-    return not email or EMAIL_RE.match(email)
 
 
 # Authentication ==========================================
 
 secret = 'unhinged'
 
-# for password encryption
-
 
 def make_pw_hash(name, password, salt=None):
+    """for password encryption"""
     if not salt:
         salt = make_salt()
     h = hashlib.sha256(name + password + salt).hexdigest()
     return '%s,%s' % (salt, h)
 
-# salt to secure the password
-
 
 def make_salt(length=5):
+    """salt to secure the password"""
     return ''.join(random.choice(letters) for x in xrange(length))
-
-# password validation by hashing
 
 
 def valid_pw(name, password, h):
+    """password validation by hashing"""
     salt = h.split(',')[0]
     return h == make_pw_hash(name, password, salt)
 
-# create secure cookie values
-
 
 def make_secure_val(val):
+    """create secure cookie values"""
     return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
-
-# check secure cookie values
 
 
 def check_secure_val(secure_val):
+    """check secure cookie values"""
     val = secure_val.split('|')[0]
     if secure_val == make_secure_val(val):
         return val
 
-# Blog Handler
+# Blog Handler =================================================
 
 
 class BlogHandler(webapp2.RequestHandler):
@@ -115,33 +89,32 @@ class BlogHandler(webapp2.RequestHandler):
             'Set-Cookie',
             'user_id=; Path=/')
 
-    # securely set a cookie
 
     def set_secure_cookie(self, name, val):
+        """securely set a cookie"""
         cookie_val = make_secure_val(val)
         self.response.headers.add_header(
             'Set-Cookie',
             '%s=%s; Path=/' % (name, cookie_val))
 
-    # get the user from secure cookie when we initializing
 
     def initialize(self, *a, **kw):
+        """get the user from secure cookie when we initializing"""
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
 
-    # read the cookie
 
     def read_secure_cookie(self, name):
+        """read the cookie"""
         cookie_val = self.request.cookies.get(name)
         return cookie_val and check_secure_val(cookie_val)
 
 # User Stuff ==========================================================
 
 
-# create a database to store user info
-
 class User(db.Model):
+    """create a database to store user info"""
     name = db.StringProperty(required=True)
     pw_hash = db.StringProperty(required=True)
     email = db.StringProperty()
@@ -171,10 +144,9 @@ class User(db.Model):
 
 # Blog Stuff =======================================================
 
-# create a database to store blog posts
-
 
 class Post(db.Model):
+    """create a database to store blog posts"""
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     user_id = db.IntegerProperty(required=True)
@@ -195,9 +167,8 @@ class Post(db.Model):
         return Post.get_by_id(uid, parent=blog_key())
 
 
-# create a database to store all comments
-
 class Comment(db.Model):
+    """create a database to store all comments"""
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
@@ -205,18 +176,16 @@ class Comment(db.Model):
     user_name = db.TextProperty(required=True)
 
 
-# create a database to store all likes
-
 class Like(db.Model):
+    """create a database to store all likes"""
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
     user_id = db.IntegerProperty(required=True)
     post_id = db.IntegerProperty(required=True)
 
-# show all the posts in the front page
-
 
 class BlogFrontHandler(BlogHandler):
+    """show all the posts in the front page"""
 
     def get(self):
         posts = db.GqlQuery(
@@ -448,8 +417,8 @@ class AddCommentHandler(BlogHandler):
 
 class EditCommentHandler(BlogHandler):
 
-    def get(self, post_id, post_user_id, comment_id):
-        if self.user and self.user.key().id() == int(post_user_id):
+    def get(self, post_id, author, comment_id):
+        if self.user and self.user.key().id() == int(author):
             postKey = db.Key.from_path('Post', int(post_id), parent=blog_key())
             key = db.Key.from_path('Comment', int(comment_id), parent=postKey)
             comment = db.get(key)
@@ -462,11 +431,11 @@ class EditCommentHandler(BlogHandler):
         else:
             self.write("You don't have permission to edit this comment.")
 
-    def post(self, post_id, post_user_id, comment_id):
+    def post(self, post_id, author, comment_id):
         if not self.user:
             return
 
-        if self.user and self.user.key().id() == int(post_user_id):
+        if self.user and self.user.key().id() == int(author):
             content = self.request.get('content')
 
             postKey = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -486,9 +455,9 @@ class EditCommentHandler(BlogHandler):
 
 class DeleteCommentHandler(BlogHandler):
 
-    def get(self, post_id, post_user_id, comment_id):
+    def get(self, post_id, author, comment_id):
 
-        if self.user and self.user.key().id() == int(post_user_id):
+        if self.user and self.user.key().id() == int(author):
             postKey = db.Key.from_path('Post', int(post_id), parent=blog_key())
             key = db.Key.from_path('Comment', int(comment_id), parent=postKey)
             comment = db.get(key)
@@ -501,6 +470,26 @@ class DeleteCommentHandler(BlogHandler):
 
         else:
             self.write("You don't have permission to delete this comment.")
+
+# Validation for login / signup =======================================
+
+USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+
+
+def valid_username(username):
+    return username and USER_RE.match(username)
+
+PASS_RE = re.compile(r"^.{3,20}$")
+
+
+def valid_password(password):
+    return password and PASS_RE.match(password)
+
+EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
+
+
+def valid_email(email):
+    return not email or EMAIL_RE.match(email)
 
 # Login ===============================================================
 

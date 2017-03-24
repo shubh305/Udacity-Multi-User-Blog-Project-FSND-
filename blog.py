@@ -257,6 +257,9 @@ class UnlikePostHandler(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+        if not post:
+            error = "ERROR: Post not found"
+            return self.render('main-page.html', like_error=error)
 
         if self.user and self.user.key().id() == post.user_id:
             self.write("You cannot dislike your own post")
@@ -332,9 +335,9 @@ class EditPostHandler(BlogHandler):
     def post(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
-
-        if not self.user:
-            return self.redirect('/login')
+        if not post:
+            error = "ERROR: Post not found"
+            return self.render('main-page.html', like_error=error)
 
         if self.user and self.user.key().id() == post.user_id:
             subject = self.request.get('subject')
@@ -355,6 +358,9 @@ class EditPostHandler(BlogHandler):
                 self.render("new-post.html", subject=subject,
                             content=content, error=error)
 
+        elif not self.user:
+            return self.redirect('/login')
+
         else:
             self.write("You cannot edit this post.")
 
@@ -363,10 +369,14 @@ class EditPostHandler(BlogHandler):
 
 class DeletePostHandler(BlogHandler):
 
-    def get(self, post_id, post_user_id):
-        if self.user and self.user.key().id() == int(post_user_id):
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            post = db.get(key)
+    def get(self, post_id, user_id):
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+        if not post:
+            error = "ERROR: Post not found"
+            return self.render('main-page.html', like_error=error)
+
+        if self.user and self.user.key().id() == post.user_id:
             post.delete()
 
             self.redirect('/')
@@ -427,32 +437,49 @@ class AddCommentHandler(BlogHandler):
 class EditCommentHandler(BlogHandler):
 
     def get(self, post_id, author, comment_id):
-        if self.user and self.user.key().id() == int(author):
-            postKey = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            key = db.Key.from_path('Comment', int(comment_id), parent=postKey)
-            comment = db.get(key)
 
+        postKey = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        key = db.Key.from_path('Comment', int(comment_id), parent=postKey)
+        comment = db.get(key)
+        if not comment:
+            error = "ERROR: Comment not found"
+            return self.render('main-page.html', like_error=error)
+
+        if comment.user_id == self.user.name:
             self.render('edit-comment.html', content=comment.content)
 
-        elif not self.user:
-            self.redirect('/login')
-
         else:
-            self.write("You don't have permission to edit this comment.")
+            error = "You cannot edit other users' comments'"
+            self.render("edit-comment.html", edit_error=error)
+
+        if not self.user:
+            self.redirect('/login')
 
     def post(self, post_id, author, comment_id):
         if not self.user:
             return
 
-        if self.user and self.user.key().id() == int(author):
+        if self.request.get:
             content = self.request.get('content')
+            if content:
 
-            postKey = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            key = db.Key.from_path('Comment', int(comment_id), parent=postKey)
-            comment = db.get(key)
+                postKey = db.Key.from_path('Post', int(post_id),
+                                           parent=blog_key())
+                key = db.Key.from_path('Comment', int(comment_id),
+                                       parent=postKey)
+                comment = db.get(key)
 
-            comment.content = content
-            comment.put()
+                if not comment:
+                    error = "ERROR: Comment not found"
+                    return self.render('main-page.html', like_error=error)
+
+                comment.content = content
+                comment.put()
+
+            if not content:
+                error = "Error: Please fill up all the fields."
+                return self.render('edit-comment.html',
+                                   content=content, error=error)
 
             self.redirect('/' + post_id)
 
@@ -465,16 +492,25 @@ class EditCommentHandler(BlogHandler):
 class DeleteCommentHandler(BlogHandler):
 
     def get(self, post_id, author, comment_id):
+        postKey = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        key = db.Key.from_path('Comment', int(comment_id), parent=postKey)
+        comment = db.get(key)
+        if not comment:
+            error = "ERROR: Comment not found"
+            return self.render('main-page.html', like_error=error)
 
-        if self.user and self.user.key().id() == int(author):
-            postKey = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            key = db.Key.from_path('Comment', int(comment_id), parent=postKey)
-            comment = db.get(key)
-            comment.delete()
+        if comment.user_id == self.user.name:
+            self.render('edit-comment.html', content=comment.content)
 
-            self.redirect('/' + post_id)
+        else:
+            error = "You cannot edit other users' comments'"
+            self.render("edit-comment.html", edit_error=error)
 
-        elif not self.user:
+        comment.delete()
+
+        self.redirect('/' + post_id)
+
+        if not self.user:
             self.redirect('/login')
 
         else:

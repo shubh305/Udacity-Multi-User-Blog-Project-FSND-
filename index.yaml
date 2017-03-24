@@ -4,4 +4,4 @@ indexes:
   ancestor: yes
   properties:
   - name: created
-    direction: asc
+    direction: desc

@@ -222,8 +222,7 @@ nav ul li a:hover {
     }
     .submit, .save-edit{
     margin-left: 2%;
-    font-size: 20px;
-    padding: 15px;
+    padding: 15px!important;
     min-width: 20%;
         margin-bottom: 10px;
     }
@@ -279,25 +278,19 @@ nav ul li a:hover {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    border-radius: .4rem;
     box-shadow: none;
     font-family: 'Ropa Sans', sans-serif;
-}
-
-.post-title:focus,
-.post-content:focus {
-	border: 0.3px solid black;
 }
 
 /* Post*/
 
 .post {
 	margin-bottom: 3rem;
-    border: 1px solid black;
-    border-radius: 15px;
     padding: 20px;
     background: #eafff3;
-}
+    -webkit-box-shadow: 9px 9px 26px -4px rgba(99,98,99,0.73);
+-moz-box-shadow: 9px 9px 26px -4px rgba(99,98,99,0.73);
+box-shadow: 9px 9px 26px -4px rgba(99,98,99,0.73);}
 
 .post .post-header {
     text-align: right;
@@ -385,6 +378,9 @@ nav ul li a:hover {
         font-size: 1.8rem;
         margin-left: 5px;
     }
+     .post-wrapper-block {
+         padding-top: 20px;
+    }
 }
 
 .post-button{
@@ -459,13 +455,16 @@ nav ul li a:hover {
 .comments {
 	margin-top: 4rem;
     margin-bottom: 4rem;
+
 }
 
 .comment {
-	border: 1px solid black;
-    border-radius: 10px;
 	margin-top: 2.0rem;
 	padding: 2.0rem;
+    background-color: #eafcff;
+    -webkit-box-shadow: 5px 6px 20px -1px rgba(99,98,99,1);
+-moz-box-shadow: 5px 6px 20px -1px rgba(99,98,99,1);
+box-shadow: 5px 6px 20px -1px rgba(99,98,99,1);
 }
 
 .comment .comment-block {

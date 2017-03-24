@@ -4,6 +4,7 @@
      <div class="container">
          <div class="post-wrapper-block">
              <div class="like-error">{{access_error}}</div>
+             <div class="like-error">{{like_error}}</div>
              {% for p in posts %}
                  {% if user %}
                 {{ p.render(user.key().id()) | safe }}

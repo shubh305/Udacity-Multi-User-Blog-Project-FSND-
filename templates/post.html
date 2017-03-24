@@ -4,7 +4,7 @@
         <div class="date">{{p.created.strftime("%b %d, %Y")}}</div>
     </div>
     <h1 class="title">
-        <a href="/{{p.key().id()}}">{{p.subject}}</a>    
+        <a href="/{{p.key().id()}}">{{p.subject}}</a>
     </h1>
     <p class="content">
         {{p._render_text | safe}}
@@ -14,6 +14,10 @@
             <img class="like-icon" src="https://image.flaticon.com/icons/svg/126/126473.svg" alt="">
         </a>
         <span class="like-counter">{{p.likes}}</span>
+        <a href="/{{p.key().id()}}/like">
+            <img class="comment-icon" src="https://image.flaticon.com/icons/svg/78/78095.svg" alt="">
+        </a>
+        <span class="comment-counter">{{p.comment_count}}</span>
     </div>
 </div>
 

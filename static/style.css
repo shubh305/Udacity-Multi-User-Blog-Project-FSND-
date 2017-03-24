@@ -324,7 +324,7 @@ nav ul li a:hover {
 
 .like-error {
     color:red;
-    font-size: 16px;
+    font-size: 20px;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -332,9 +332,23 @@ nav ul li a:hover {
 	width: 2.5rem;
 	height: 2.5rem;
 	vertical-align: middle;
+
 }
 
 .post .like-counter {
+	font-size: 2rem;
+	vertical-align: middle;
+	margin-left: 0.5rem;
+        margin-right: 20px;
+}
+
+.post .comment-icon {
+	width: 2.5rem;
+	height: 2.5rem;
+	vertical-align: middle;
+}
+
+.post .comment-counter {
 	font-size: 2rem;
 	vertical-align: middle;
 	margin-left: 0.5rem;

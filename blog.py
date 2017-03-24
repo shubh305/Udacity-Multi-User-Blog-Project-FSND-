@@ -150,6 +150,7 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
     likes = db.IntegerProperty(default=0)
+    comment_count = db.IntegerProperty(default=0)
 
     def render(self, current_user_id):
         key = db.Key.from_path('User', int(self.user_id), parent=users_key())
@@ -217,6 +218,9 @@ class LikePostHandler(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+        if not post:
+            error = "ERROR: Post not found"
+            return self.render('main-page.html', like_error=error)
 
         if self.user and self.user.key().id() == post.user_id:
             error = "ERROR: You can not like your own post."
@@ -398,10 +402,15 @@ class AddCommentHandler(BlogHandler):
         if content:
             user_name = self.user.name
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            if not post:
+                self.error(404)
 
             c = Comment(parent=key, user_id=int(user_id), content=content,
                         user_name=user_name)
             c.put()
+            post.comment_count += 1
+            post.put()
 
             self.redirect('/' + post_id)
         else:

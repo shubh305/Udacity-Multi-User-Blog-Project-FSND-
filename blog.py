@@ -315,6 +315,9 @@ class EditPostHandler(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+        if not post:
+            error = "ERROR: Post not found"
+            return self.render('main-page.html', like_error=error)
 
         if self.user and self.user.key().id() == post.user_id:
             self.render('edit-post.html', subject=post.subject,

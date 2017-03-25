@@ -344,9 +344,6 @@ class EditPostHandler(BlogHandler):
             content = self.request.get('content')
 
             if subject and content:
-                key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-                post = db.get(key)
-
                 post.subject = subject
                 post.content = content
 
@@ -445,15 +442,15 @@ class EditCommentHandler(BlogHandler):
             error = "ERROR: Comment not found"
             return self.render('main-page.html', like_error=error)
 
-        if comment.user_id == self.user.name:
+        if self.user and self.user.name == comment.user_id:
             self.render('edit-comment.html', content=comment.content)
+
+        elif not self.user:
+            self.redirect('/login')
 
         else:
             error = "You cannot edit other users' comments'"
             self.render("edit-comment.html", edit_error=error)
-
-        if not self.user:
-            self.redirect('/login')
 
     def post(self, post_id, author, comment_id):
         if not self.user:
@@ -472,9 +469,9 @@ class EditCommentHandler(BlogHandler):
                 if not comment:
                     error = "ERROR: Comment not found"
                     return self.render('main-page.html', like_error=error)
-
-                comment.content = content
-                comment.put()
+                if comment.user_name == self.user.name:
+                    comment.content = content
+                    comment.put()
 
             if not content:
                 error = "Error: Please fill up all the fields."
@@ -499,8 +496,11 @@ class DeleteCommentHandler(BlogHandler):
             error = "ERROR: Comment not found"
             return self.render('main-page.html', like_error=error)
 
-        if comment.user_id == self.user.name:
+        if self.user and self.user.name == comment.user_id:
             self.render('edit-comment.html', content=comment.content)
+
+        elif not self.user:
+            self.redirect('/login')
 
         else:
             error = "You cannot edit other users' comments'"
@@ -509,12 +509,6 @@ class DeleteCommentHandler(BlogHandler):
         comment.delete()
 
         self.redirect('/' + post_id)
-
-        if not self.user:
-            self.redirect('/login')
-
-        else:
-            self.write("You don't have permission to delete this comment.")
 
 # Validation for login / signup =======================================
 

@@ -1,7 +1,12 @@
 <div class="post">
     <div class="post-header wow animated fadeInUp">
-        <div class="user">Posted By {{author}}</div>
-        <div class="date">{{p.created.strftime("%b %d, %Y")}}</div>
+        <div class="author">
+            <img class="author_image" src="https://image.flaticon.com/icons/svg/321/321802.svg" alt="">
+        </div>
+        <div class="v_post">
+            <div class="user">Posted By {{author}}</div>
+            <div class="date">{{p.created.strftime("%b %d, %Y")}}</div>
+        </div>
     </div>
     <h1 class="title">
         <a href="/{{p.key().id()}}">{{p.subject}}</a>

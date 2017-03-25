@@ -284,29 +284,41 @@ nav ul li a:hover {
 
 /* Post*/
 
+.author {
+    width: 5rem;
+	height: 5rem;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.author_image {
+    width: auto;
+	height: 100%;
+}
+
+.v_post {
+	vertical-align: middle;
+	display: inline-block;
+	padding-left: 1.5rem;
+}
+
+
 .post {
 	margin-bottom: 3rem;
-    padding: 20px;
+    padding: 25px;
     background: #eafff3;
     -webkit-box-shadow: 9px 9px 26px -4px rgba(99,98,99,0.73);
 -moz-box-shadow: 9px 9px 26px -4px rgba(99,98,99,0.73);
 box-shadow: 9px 9px 26px -4px rgba(99,98,99,0.73);}
-
-.post .post-header {
-    text-align: right;
-}
 
 .post .user {
 	font-weight: 500;
     font-family: 'Rambla', sans-serif;
 }
 
-.post .date {
-
-}
-
 .title {
 	font-size: 22px;
+    margin-top: 10px;
     font-family: 'Rambla', sans-serif;
 }
 
@@ -462,10 +474,11 @@ box-shadow: 9px 9px 26px -4px rgba(99,98,99,0.73);}
 	margin-top: 2.0rem;
 	padding: 2.0rem;
     background-color: #eafcff;
-    -webkit-box-shadow: 5px 6px 20px -1px rgba(99,98,99,1);
--moz-box-shadow: 5px 6px 20px -1px rgba(99,98,99,1);
-box-shadow: 5px 6px 20px -1px rgba(99,98,99,1);
+    -webkit-box-shadow: 9px 9px 26px -4px rgba(99,98,99,0.73);
+-moz-box-shadow: 9px 9px 26px -4px rgba(99,98,99,0.73);
+box-shadow: 9px 9px 26px -4px rgba(99,98,99,0.73);
 }
+
 
 .comment .comment-block {
 	vertical-align: middle;
